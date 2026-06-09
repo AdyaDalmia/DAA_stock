@@ -63,7 +63,7 @@ def test_fetch_news_returns_list_of_strings(monkeypatch):
 
 def test_fetch_news_returns_empty_on_missing_key(monkeypatch):
     """fetch_news must return [] when NEWSAPI_KEY is empty"""
-    import os
-    monkeypatch.setenv("NEWSAPI_KEY", "")
+    import pipeline.fetch as fetch_module
+    monkeypatch.setattr(fetch_module, "NEWSAPI_KEY", "")
     result = fetch_news("RELIANCE")
     assert result == []
