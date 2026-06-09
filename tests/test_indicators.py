@@ -71,3 +71,43 @@ def test_macd_returns_two_floats():
     macd_val, signal_val = macd(prices)
     assert isinstance(macd_val, float)
     assert isinstance(signal_val, float)
+
+
+# --- Segment Tree tests ---
+
+from pipeline.indicators import SegmentTree, compute_indicators
+
+
+def test_segment_tree_range_max():
+    """O(log n) range maximum query"""
+    data = [3.0, 1.0, 4.0, 1.0, 5.0, 9.0, 2.0, 6.0]
+    st = SegmentTree(data)
+    assert st.query_max(0, 4) == pytest.approx(5.0)
+    assert st.query_max(0, 7) == pytest.approx(9.0)
+    assert st.query_max(5, 7) == pytest.approx(9.0)
+
+
+def test_segment_tree_range_min():
+    """O(log n) range minimum query"""
+    data = [3.0, 1.0, 4.0, 1.0, 5.0, 9.0, 2.0, 6.0]
+    st = SegmentTree(data)
+    assert st.query_min(0, 4) == pytest.approx(1.0)
+    assert st.query_min(2, 5) == pytest.approx(1.0)
+    assert st.query_min(5, 7) == pytest.approx(2.0)
+
+
+def test_segment_tree_single_element():
+    st = SegmentTree([42.0])
+    assert st.query_max(0, 0) == pytest.approx(42.0)
+    assert st.query_min(0, 0) == pytest.approx(42.0)
+
+
+def test_compute_indicators_returns_required_keys():
+    stock_data = {
+        "closes": [float(100 + i + (i % 5)) for i in range(260)],
+        "current_price": 360.0,
+    }
+    result = compute_indicators(stock_data)
+    for key in ["rsi", "macd", "macd_signal", "sma20", "sma50",
+                "high_30d", "low_30d", "high_52w", "low_52w", "current_price"]:
+        assert key in result, f"Missing key: {key}"
