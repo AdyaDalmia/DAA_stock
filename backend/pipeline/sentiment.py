@@ -31,9 +31,9 @@ def analyze_sentiment(headlines: list[str]) -> dict:
     avg_score = sum(item["score"] for item in scored) / len(scored)
     avg_score = round(max(-1.0, min(1.0, avg_score)), 3)
 
-    if avg_score > 0.05:
+    if avg_score > 0.2:
         label = "Bullish"
-    elif avg_score < -0.05:
+    elif avg_score < -0.2:
         label = "Bearish"
     else:
         label = "Neutral"

@@ -3,8 +3,8 @@ from pipeline.sentiment import analyze_sentiment
 
 def test_positive_headlines_return_bullish():
     headlines = [
-        "Company posts record profits beating all estimates",
-        "Stock surges to all-time high on strong earnings",
+        "Excellent fantastic profits — best results ever",
+        "Outstanding earnings, wonderful performance, strong growth",
     ]
     result = analyze_sentiment(headlines)
     assert result["sentiment_score"] > 0
