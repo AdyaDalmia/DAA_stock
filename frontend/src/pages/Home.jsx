@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import SearchBar from '../components/SearchBar'
 import { analyzeStock } from '../api/analyze'
+import RecommendationCard from '../components/RecommendationCard'
+import PriceChart from '../components/PriceChart'
+import IndicatorsPanel from '../components/IndicatorsPanel'
+import SentimentPanel from '../components/SentimentPanel'
+import InfluenceGraph from '../components/InfluenceGraph'
 
 const TABS = ['Overview', 'Indicators', 'News', 'Influence']
 
@@ -62,10 +67,15 @@ export default function Home() {
             ))}
           </div>
 
-          {activeTab === 'Overview' && <div style={{ color: '#6b7280' }}>Overview coming in next task...</div>}
-          {activeTab === 'Indicators' && <div style={{ color: '#6b7280' }}>Indicators coming soon...</div>}
-          {activeTab === 'News' && <div style={{ color: '#6b7280' }}>News coming soon...</div>}
-          {activeTab === 'Influence' && <div style={{ color: '#6b7280' }}>Influence graph coming soon...</div>}
+          {activeTab === 'Overview' && (
+            <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '1.5rem' }}>
+              <RecommendationCard result={result} />
+              <PriceChart prices={result.prices} dates={result.dates} symbol={result.symbol} />
+            </div>
+          )}
+          {activeTab === 'Indicators' && <IndicatorsPanel indicators={result.indicators} />}
+          {activeTab === 'News' && <SentimentPanel sentiment={result.sentiment} />}
+          {activeTab === 'Influence' && <InfluenceGraph influence={result.influence} symbol={result.symbol} />}
         </div>
       )}
     </div>
