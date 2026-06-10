@@ -1,67 +1,68 @@
-function Node({ label, primary }) {
+function StockPill({ label, primary }) {
   return (
     <span style={{
       display: 'inline-block',
-      background: primary ? '#6366f1' : '#e0e7ff',
+      background: primary ? '#4f46e5' : '#ede9fe',
       color: primary ? '#fff' : '#4338ca',
-      padding: '0.3rem 0.8rem', borderRadius: 20,
-      fontSize: '0.8rem', fontWeight: 700,
-      border: '1px solid ' + (primary ? '#6366f1' : '#c7d2fe')
+      padding: '0.3rem 0.85rem', borderRadius: 20,
+      fontSize: '0.78rem', fontWeight: 700,
+      border: `1px solid ${primary ? '#4f46e5' : '#ddd6fe'}`
     }}>
       {label}
     </span>
   )
 }
 
-const th = { padding: '0.65rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#6b7280', fontWeight: 600, textTransform: 'uppercase' }
-const td = { padding: '0.6rem 1rem', fontSize: '0.875rem' }
-
 export default function InfluenceGraph({ influence, symbol }) {
   const { influenced_stocks, bfs_levels } = influence
 
   return (
-    <div style={{ border: '1px solid #e5e7eb', borderRadius: 12, padding: '1.5rem' }}>
-      <div style={{ fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.25rem' }}>
+    <div>
+      <div style={{ marginBottom: '0.25rem', fontWeight: 700, fontSize: '0.95rem', color: '#111827' }}>
         Stock Influence Graph
       </div>
-      <div style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '1.5rem' }}>
-        BFS traversal from {symbol} — O(V+E) &nbsp;·&nbsp; shows which stocks may be affected by news
+      <div style={{ fontSize: '0.78rem', color: '#9ca3af', marginBottom: '1.25rem' }}>
+        BFS from {symbol} · O(V+E) &nbsp;·&nbsp; stocks that may be affected by news about {symbol}
       </div>
 
       {influenced_stocks.length === 0 ? (
-        <p style={{ color: '#9ca3af' }}>{symbol} is not in the influence graph. Try RELIANCE, TCS, HDFC, TATAMOTORS, SUNPHARMA.</p>
+        <p style={{ color: '#9ca3af', fontSize: '0.875rem' }}>
+          {symbol} is not in the influence graph. Try: RELIANCE · TCS · HDFCBANK · TATAMOTORS · SUNPHARMA
+        </p>
       ) : (
         <>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem', padding: '1rem', background: '#f9fafb', borderRadius: 8 }}>
-            <Node label={symbol} primary />
+          {/* BFS visual */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', padding: '1rem', background: '#f8fafc', borderRadius: 10, border: '1px solid #e2e8f0', marginBottom: '1.25rem' }}>
+            <StockPill label={symbol} primary />
             {bfs_levels.map((level, li) => (
               <div key={li} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <span style={{ color: '#d1d5db', fontSize: '1.2rem' }}>→</span>
-                {level.map(s => <Node key={s} label={s} primary={false} />)}
+                <span style={{ color: '#d1d5db', fontSize: '1.1rem' }}>→</span>
+                {level.map(s => <StockPill key={s} label={s} primary={false} />)}
               </div>
             ))}
           </div>
 
-          <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead style={{ background: '#f9fafb' }}>
-                <tr>
-                  <th style={th}>Influenced Stock</th>
-                  <th style={th}>BFS Distance</th>
-                  <th style={th}>Influence Level</th>
-                </tr>
-              </thead>
-              <tbody>
-                {influenced_stocks.map((s, i) => (
-                  <tr key={i} style={{ borderTop: '1px solid #f3f4f6' }}>
-                    <td style={{ ...td, fontWeight: 700 }}>{s.symbol}</td>
-                    <td style={td}>{s.distance}</td>
-                    <td style={td}>{s.distance === 1 ? '🔴 Direct impact' : '🟡 Indirect impact'}</td>
-                  </tr>
+          {/* Table */}
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+            <thead>
+              <tr style={{ background: '#f8fafc' }}>
+                {['Influenced Stock', 'BFS Distance', 'Impact Level'].map(h => (
+                  <th key={h} style={{ padding: '0.65rem 1rem', textAlign: 'left', fontSize: '0.7rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #e2e8f0' }}>
+                    {h}
+                  </th>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </tr>
+            </thead>
+            <tbody>
+              {influenced_stocks.map((s, i) => (
+                <tr key={i} style={{ borderBottom: '1px solid #f3f4f6', background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
+                  <td style={{ padding: '0.65rem 1rem', fontWeight: 700, color: '#111827' }}>{s.symbol}</td>
+                  <td style={{ padding: '0.65rem 1rem', color: '#374151' }}>{s.distance}</td>
+                  <td style={{ padding: '0.65rem 1rem' }}>{s.distance === 1 ? '🔴 Direct' : '🟡 Indirect'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </>
       )}
     </div>
