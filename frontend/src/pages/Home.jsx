@@ -46,7 +46,6 @@ export default function Home() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '1.3rem' }}>📈</span>
           <span style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827' }}>StockSense</span>
-          <span style={{ color: '#9ca3af', fontSize: '0.72rem', marginLeft: '0.25rem' }}>DAA Stock Analyzer</span>
         </div>
         <form onSubmit={handleAnalyze} style={{ display: 'flex', gap: '0.5rem' }}>
           <input
