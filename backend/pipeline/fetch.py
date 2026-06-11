@@ -13,11 +13,21 @@ def fetch_stock_data(symbol: str) -> dict:
     """Fetch 1 year of daily OHLCV data from Yahoo Finance (NSE).
 
     Time complexity: O(n) where n = trading days in 1 year (~252)
+    Tries NSE suffix first, falls back to BSE. Single attempt per suffix.
     """
-    ticker = yf.Ticker(f"{symbol.upper()}.NS")
-    hist = ticker.history(period="1y")
+    sym = symbol.upper()
+    hist = None
 
-    if hist.empty:
+    for suffix in [".NS", ".BO"]:
+        try:
+            ticker = yf.Ticker(f"{sym}{suffix}")
+            hist = ticker.history(period="1y", timeout=8)
+            if hist is not None and not hist.empty:
+                break
+        except Exception:
+            continue
+
+    if hist is None or hist.empty:
         raise ValueError(f"No data found for {symbol}. Check the NSE symbol.")
 
     return {
